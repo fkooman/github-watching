@@ -1,0 +1,11 @@
+{
+  "name": "github-watching",
+  "version": "0.1.0",
+  "authors": [
+    "François Kooman <fkooman@tuxed.net>"
+  ],
+  "license": "AGPLv3+",
+  "dependencies": {
+    "bootstrap": "~3.1.1"
+  }
+}

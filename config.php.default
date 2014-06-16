@@ -1,0 +1,7 @@
+<?php
+
+$config = array(
+    "client_id" => "foo",
+    "client_secret" => "bar",
+    "index_uri" => "https://foo.example.org/github-watching/index.php"
+);
