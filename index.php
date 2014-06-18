@@ -10,7 +10,7 @@ use Guzzle\Log\MessageFormatter;
 use Guzzle\Log\MonologLogAdapter;
 use Guzzle\Http\Exception\ClientErrorResponseException;
 
-$apiScope = array("user");
+$apiScope = array("notifications");
 
 $clientConfig = new fkooman\OAuth\Client\GitHubClientConfig(
     array(
@@ -45,6 +45,12 @@ try {
 
     $ghapi = new fkooman\GitHub\Api($client);
     $userLogin = $ghapi->getUserLogin();
+
+    // $ghapi->unsubscribeRepository('php-lib-types');
+    // $ghapi->unsubscribeRepository('php-remoteStorage');
+    // $ghapi->unsubscribeRepository('github-watching');
+    // $ghapi->subscribeRepository('github-watching');
+
     $listOfRepositories = $ghapi->getMyRepositories();
     $listOfSubscriptions = $ghapi->getMySubscriptions();
 

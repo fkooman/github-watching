@@ -12,6 +12,8 @@ class Api
     const API_REPOS = "https://api.github.com/user/repos";
     const API_SUBSCRIPTIONS = 'https://api.github.com/user/subscriptions';
 
+    const API_SUBSCRIBE = 'https://api.github.com/repos/:owner/:repo/subscription';
+
     /**
      * @param $http The Guzzle object with the OAuth header already added
      */
@@ -37,13 +39,29 @@ class Api
         return $this->client->get(self::API_SUBSCRIPTIONS)->send()->json();
     }
 
-    public function subscribeRepository($id)
+    public function subscribeRepository($repo)
     {
+        $subscribeUri = str_replace(':owner', $this->getUserLogin(), str_replace(':repo', $repo, self::API_SUBSCRIBE));
 
+        $putData = json_encode(
+            array(
+                "subscribed" => true,
+                "ignored" => false
+            )
+        );
+
+        $this->client->put(
+            $subscribeUri,
+            array(
+                'headers' => array('Content-Type' => 'application/json'),
+            ),
+            $putData
+        )->send();
     }
 
-    public function unsubscribeRepository($id)
+    public function unsubscribeRepository($repo)
     {
-
+        $subscribeUri = str_replace(':owner', $this->getUserLogin(), str_replace(':repo', $repo, self::API_SUBSCRIBE));
+        $this->client->delete($subscribeUri)->send();
     }
 }
