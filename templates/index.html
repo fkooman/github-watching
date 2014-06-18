@@ -19,13 +19,13 @@
   <body>
     <div class="container">
     <h1>GitHub Watching</h1>
-    <p>User <strong>{{ userLogin|e }}</strong> has {{ projects|length }} repositories on GitHub.</p>
+    <p>User <strong>{{ user|e }}</strong> has {{ repos|length }} repositories on GitHub.</p>
 
     <h3>Repositories</h3>
     <table class="table table-striped">
       <tr><th>Name</th><th>Watching</th></tr>
-      {% for project in projects %}
-        <tr><td><a href="{{ project.html_url|e }}">{{ project.name|e }}</a></td><td>{{ project.watching|e }}</td></tr>
+      {% for repo in repos %}
+        <tr><td><a href="{{ repo.html_url|e }}">{{ repo.name|e }}</a></td><td>{{ repo.watching|e }}</td></tr>
       {% endfor %}
     </table>
 

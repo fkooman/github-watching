@@ -44,7 +44,7 @@ try {
     // $client->addSubscriber($logPlugin);
 
     $ghapi = new fkooman\GitHub\Api($client);
-    $userLogin = $ghapi->getUserLogin();
+    $user = $ghapi->getUserLogin();
 
     // $ghapi->unsubscribeRepository('php-lib-types');
     // $ghapi->unsubscribeRepository('php-remoteStorage');
@@ -76,7 +76,12 @@ try {
     $loader = new Twig_Loader_Filesystem('templates');
     $twig = new Twig_Environment($loader);
     $template = $twig->loadTemplate('index.html');
-    echo $template->render(array("projects" => $data, "userLogin" => $userLogin));
+    echo $template->render(
+        array(
+            "repos" => $data,
+            "user" => $user
+        )
+    );
 } catch (ClientErrorResponseException $e) {
     // GitHub does not use the official OAuth 2.0 Bearer response with
     // the WWW-Authenticate header in case of authorization errors so we
