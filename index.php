@@ -32,7 +32,7 @@ try {
     $client->addSubscriber($bearerAuth);
 
     $api = new fkooman\GitHub\Api($client);
-    
+
     $listOfRepositories = $api->getMyRepositories();
     $listOfSubscriptions = $api->getMySubscriptions();
 
