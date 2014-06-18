@@ -1,10 +1,9 @@
 <?php
 
 require_once 'vendor/autoload.php';
-require_once 'GitHubApi.php';
 require_once 'config.php';
 
-$apiScope = array("user", "read:org");
+$apiScope = array("user");
 
 $clientConfig = new fkooman\OAuth\Client\GitHubClientConfig(
     array(
@@ -32,7 +31,7 @@ try {
     $bearerAuth = new fkooman\Guzzle\Plugin\BearerAuth\BearerAuth($accessToken->getAccessToken());
     $client->addSubscriber($bearerAuth);
 
-    $api = new GitHubApi($client);
+    $api = new fkooman\GitHub\Api($client);
     
     $listOfRepositories = $api->getMyRepositories();
     $listOfSubscriptions = $api->getMySubscriptions();

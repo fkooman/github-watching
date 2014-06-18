@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f863a2549e03220ec8c844b0597c3c51",
+    "hash": "378d41afc9c4a2d0f86972161f1f64a4",
     "packages": [
         {
             "name": "fkooman/guzzle-bearer-auth-plugin",

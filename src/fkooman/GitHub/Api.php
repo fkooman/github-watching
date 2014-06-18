@@ -1,8 +1,10 @@
 <?php
 
+namespace fkooman\GitHub;
+
 use Guzzle\Http\Client;
 
-class GitHubApi
+class Api
 {
     private $client;
 

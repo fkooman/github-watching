@@ -1,8 +1,13 @@
 {
+    "autoload": {
+        "psr-0": {
+            "fkooman\\GitHub\\": "src/"
+        }
+    },
     "name": "fkooman/github-watching",
     "require": {
         "fkooman/guzzle-bearer-auth-plugin": "dev-master",
         "fkooman/php-oauth-client": "dev-master",
-	"twig/twig": "v1.15.1"
+        "twig/twig": "v1.15.1"
     }
 }
