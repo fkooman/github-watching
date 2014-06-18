@@ -3,6 +3,13 @@
 require_once 'vendor/autoload.php';
 require_once 'config.php';
 
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+use Guzzle\Plugin\Log\LogPlugin;
+use Guzzle\Log\MessageFormatter;
+use Guzzle\Log\MonologLogAdapter;
+use Guzzle\Http\Exception\ClientErrorResponseException;
+
 $apiScope = array("user");
 
 $clientConfig = new fkooman\OAuth\Client\GitHubClientConfig(
@@ -27,16 +34,19 @@ if (false === $accessToken) {
 }
 
 try {
+    $log = new Logger('github-watching');
+    $log->pushHandler(new StreamHandler(sprintf("%s/log/client.log", __DIR__), Logger::DEBUG));
+    $logPlugin = new LogPlugin(new MonologLogAdapter($log), MessageFormatter::DEBUG_FORMAT);
+
     $client = new Guzzle\Http\Client();
     $bearerAuth = new fkooman\Guzzle\Plugin\BearerAuth\BearerAuth($accessToken->getAccessToken());
     $client->addSubscriber($bearerAuth);
+    // $client->addSubscriber($logPlugin);
 
-    $api = new fkooman\GitHub\Api($client);
-
-    $userLogin = $api->getUserLogin();
-
-    $listOfRepositories = $api->getMyRepositories();
-    $listOfSubscriptions = $api->getMySubscriptions();
+    $ghapi = new fkooman\GitHub\Api($client);
+    $userLogin = $ghapi->getUserLogin();
+    $listOfRepositories = $ghapi->getMyRepositories();
+    $listOfSubscriptions = $ghapi->getMySubscriptions();
 
     $data = array();
 
@@ -61,9 +71,11 @@ try {
     $twig = new Twig_Environment($loader);
     $template = $twig->loadTemplate('index.html');
     echo $template->render(array("projects" => $data, "userLogin" => $userLogin));
-} catch (fkooman\Guzzle\Plugin\BearerAuth\Exception\BearerErrorResponseException $e) {
-    if ("invalid_token" === $e->getBearerReason()) {
-        // the token we used was invalid, possibly revoked, we throw it away
+} catch (ClientErrorResponseException $e) {
+    // GitHub does not use the official OAuth 2.0 Bearer response with
+    // the WWW-Authenticate header in case of authorization errors so we
+    // cannot catch BearerErrorResponseException
+    if (401 === $e->getResponse()->getStatusCode()) {
         $api->deleteAccessToken($context);
         $api->deleteRefreshToken($context);
         /* no valid access token available, go to authorization server */
