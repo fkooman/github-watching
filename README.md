@@ -17,7 +17,7 @@ And then Bower:
 # Configuration
 Copy `config.php.default` to `config.php` and modify the configuration to
 match the client configuration obtained from the GitHub website after you 
-[[register|https://github.com/settings/application]] your client. Also update
+[register](https://github.com/settings/application) your client. Also update
 the URL there to point to your `index.php`. The callback URL you register at
 GitHub should look like this: 
 `https://fkooman.pagekite.me/fkooman/github-watching/callback.php`. Make sure 

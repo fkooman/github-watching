@@ -1,10 +1,8 @@
 <?php
 
 require_once 'vendor/autoload.php';
+require_once 'GitHubApi.php';
 require_once 'config.php';
-
-$repositoriesUri = "https://api.github.com/user/repos";
-$subscriptionUri = "https://api.github.com/user/subscriptions";
 
 $apiScope = array("user", "read:org");
 
@@ -33,8 +31,11 @@ try {
     $client = new Guzzle\Http\Client();
     $bearerAuth = new fkooman\Guzzle\Plugin\BearerAuth\BearerAuth($accessToken->getAccessToken());
     $client->addSubscriber($bearerAuth);
-    $listOfRepositories = $client->get($repositoriesUri)->send()->json();
-    $listOfSubscriptions = $client->get($subscriptionUri)->send()->json();
+
+    $api = new GitHubApi($client);
+    
+    $listOfRepositories = $api->getMyRepositories();
+    $listOfSubscriptions = $api->getMySubscriptions();
 
     $data = array();
 
