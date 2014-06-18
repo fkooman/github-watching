@@ -8,6 +8,7 @@ class Api
 {
     private $client;
 
+    const API_USER = 'https://api.github.com/user';
     const API_REPOS = "https://api.github.com/user/repos";
     const API_SUBSCRIPTIONS = 'https://api.github.com/user/subscriptions';
 
@@ -17,6 +18,13 @@ class Api
     public function __construct(Client $client)
     {
         $this->client = $client;
+    }
+
+    public function getUserLogin()
+    {
+        $userData = $this->client->get(self::API_USER)->send()->json();
+
+        return $userData['login'];
     }
 
     public function getMyRepositories()

@@ -33,6 +33,8 @@ try {
 
     $api = new fkooman\GitHub\Api($client);
 
+    $userLogin = $api->getUserLogin();
+
     $listOfRepositories = $api->getMyRepositories();
     $listOfSubscriptions = $api->getMySubscriptions();
 
@@ -58,7 +60,7 @@ try {
     $loader = new Twig_Loader_Filesystem('templates');
     $twig = new Twig_Environment($loader);
     $template = $twig->loadTemplate('index.html');
-    echo $template->render(array("projects" => $data));
+    echo $template->render(array("projects" => $data, "userLogin" => $userLogin));
 } catch (fkooman\Guzzle\Plugin\BearerAuth\Exception\BearerErrorResponseException $e) {
     if ("invalid_token" === $e->getBearerReason()) {
         // the token we used was invalid, possibly revoked, we throw it away

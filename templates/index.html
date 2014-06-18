@@ -19,7 +19,9 @@
   <body>
     <div class="container">
     <h1>GitHub Watching</h1>
-    <p>You have {{ projects|length }} repositories on GitHub.</p>
+    <p>User <strong>{{ userLogin|e }}</strong> has {{ projects|length }} repositories on GitHub.</p>
+
+    <h3>Repositories</h3>
     <table class="table table-striped">
       <tr><th>Name</th><th>Watching</th></tr>
       {% for project in projects %}
