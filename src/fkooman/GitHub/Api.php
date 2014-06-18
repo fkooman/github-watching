@@ -64,4 +64,26 @@ class Api
         $subscribeUri = str_replace(':owner', $this->getUserLogin(), str_replace(':repo', $repo, self::API_SUBSCRIBE));
         $this->client->delete($subscribeUri)->send();
     }
+
+    public function getRepositoryWatchingStatus()
+    {
+        foreach ($this->getMyRepositories() as $r) {
+            $watch = false;
+
+            foreach ($this->getMySubscriptions() as $s) {
+                if ($r['id'] === $s['id']) {
+                    // yes we watch it
+                    $watch = true;
+                }
+            }
+
+            $data[] = array(
+                "name" => $r['name'],
+                "watching" => $watch ? "yes" : "no",
+                "html_url" => $r['html_url']
+            );
+        }
+
+        return $data;
+    }
 }

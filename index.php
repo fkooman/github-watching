@@ -51,34 +51,12 @@ try {
     // $ghapi->unsubscribeRepository('github-watching');
     // $ghapi->subscribeRepository('github-watching');
 
-    $listOfRepositories = $ghapi->getMyRepositories();
-    $listOfSubscriptions = $ghapi->getMySubscriptions();
-
-    $data = array();
-
-    foreach ($listOfRepositories as $r) {
-        $watch = false;
-
-        foreach ($listOfSubscriptions as $s) {
-            if ($r['id'] === $s['id']) {
-                // yes we watch it
-                $watch = true;
-            }
-        }
-
-        $data[] = array(
-            "name" => $r['name'],
-            "watching" => $watch ? "yes" : "no",
-            "html_url" => $r['html_url']
-        );
-    }
-
     $loader = new Twig_Loader_Filesystem('templates');
     $twig = new Twig_Environment($loader);
     $template = $twig->loadTemplate('index.html');
     echo $template->render(
         array(
-            "repos" => $data,
+            "repos" => $ghapi->getRepositoryWatchingStatus(),
             "user" => $user
         )
     );
