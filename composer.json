@@ -1,13 +1,16 @@
 {
-    "autoload": {
-        "psr-0": {
-            "fkooman\\GitHub\\": "src/"
-        }
-    },
+    "description": "Check whether or not you are watching your own repositories on GitHub.",
+    "license": " AGPL-3.0",
     "name": "fkooman/github-watching",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/fkooman/php-github-api"
+        }
+    ],
     "require": {
-        "fkooman/guzzle-bearer-auth-plugin": "dev-master",
         "fkooman/php-oauth-client": "dev-master",
+        "knplabs/github-api": "dev-master",
         "twig/twig": "v1.15.1"
     }
 }

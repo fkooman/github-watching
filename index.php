@@ -3,11 +3,6 @@
 require_once 'vendor/autoload.php';
 require_once 'config.php';
 
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
-use Guzzle\Plugin\Log\LogPlugin;
-use Guzzle\Log\MessageFormatter;
-use Guzzle\Log\MonologLogAdapter;
 use Guzzle\Http\Exception\ClientErrorResponseException;
 
 $apiScope = array("notifications");
@@ -34,30 +29,46 @@ if (false === $accessToken) {
 }
 
 try {
-    $log = new Logger('github-watching');
-    $log->pushHandler(new StreamHandler(sprintf("%s/log/client.log", __DIR__), Logger::DEBUG));
-    $logPlugin = new LogPlugin(new MonologLogAdapter($log), MessageFormatter::DEBUG_FORMAT);
+    $client = new Github\Client(
+        new Github\HttpClient\CachedHttpClient(array('cache_dir' => '/tmp/github-api-cache'))
+    );
 
-    $client = new Guzzle\Http\Client();
-    $bearerAuth = new fkooman\Guzzle\Plugin\BearerAuth\BearerAuth($accessToken->getAccessToken());
-    $client->addSubscriber($bearerAuth);
-    // $client->addSubscriber($logPlugin);
+    $client->authenticate($accessToken->getAccessToken(), null, Github\Client::AUTH_HTTP_TOKEN);
 
-    $ghapi = new fkooman\GitHub\Api($client);
-    $user = $ghapi->getUserLogin();
+    $userInfo = $client->api('current_user')->show();
+    $userLogin = $userInfo['login'];
 
-    // $ghapi->unsubscribeRepository('php-lib-types');
-    // $ghapi->unsubscribeRepository('php-remoteStorage');
-    // $ghapi->unsubscribeRepository('github-watching');
-    // $ghapi->subscribeRepository('github-watching');
+    $myRepositories = $client->api('current_user')->repositories();
+
+    $mySubscriptions = $client->api('current_user')->subscriptions();
+    //var_dump($mySubscriptions);
+    //die();
+
+    $data = array();
+    foreach ($myRepositories as $r) {
+        $watch = false;
+
+        foreach ($mySubscriptions as $s) {
+            if ($r['id'] === $s['id']) {
+                // yes we watch it
+                $watch = true;
+            }
+        }
+
+        $data[] = array(
+            "name" => $r['name'],
+            "watching" => $watch ? "yes" : "no",
+            "html_url" => $r['html_url']
+        );
+    }
 
     $loader = new Twig_Loader_Filesystem('templates');
     $twig = new Twig_Environment($loader);
     $template = $twig->loadTemplate('index.html');
     echo $template->render(
         array(
-            "repos" => $ghapi->getRepositoryWatchingStatus(),
-            "user" => $user
+            "repos" => $data,
+            "user" => $userLogin
         )
     );
 } catch (ClientErrorResponseException $e) {
