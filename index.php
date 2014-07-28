@@ -3,8 +3,6 @@
 require_once 'vendor/autoload.php';
 require_once 'config.php';
 
-use Guzzle\Http\Exception\ClientErrorResponseException;
-
 $apiScope = array("notifications");
 
 $clientConfig = new fkooman\OAuth\Client\GitHubClientConfig(
@@ -41,8 +39,6 @@ try {
     $myRepositories = $client->api('current_user')->repositories();
 
     $mySubscriptions = $client->api('current_user')->subscriptions();
-    //var_dump($mySubscriptions);
-    //die();
 
     $data = array();
     foreach ($myRepositories as $r) {
@@ -71,11 +67,11 @@ try {
             "user" => $userLogin
         )
     );
-} catch (ClientErrorResponseException $e) {
+} catch (Github\Exception\RuntimeException $e) {
     // GitHub does not use the official OAuth 2.0 Bearer response with
     // the WWW-Authenticate header in case of authorization errors so we
     // cannot catch BearerErrorResponseException
-    if (401 === $e->getResponse()->getStatusCode()) {
+    if (401 === $e->getCode()) {
         $api->deleteAccessToken($context);
         $api->deleteRefreshToken($context);
         /* no valid access token available, go to authorization server */

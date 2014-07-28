@@ -11,6 +11,6 @@
     "require": {
         "fkooman/php-oauth-client": "dev-master",
         "knplabs/github-api": "dev-master",
-        "twig/twig": "v1.15.1"
+        "twig/twig": "~1.15"
     }
 }
